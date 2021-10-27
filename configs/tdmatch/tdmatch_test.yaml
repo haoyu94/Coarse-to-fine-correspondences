@@ -1,0 +1,80 @@
+misc:
+  exp_dir: tdmatch_enc_dec_test
+  gpu_mode: True
+  verbose: True
+  verbose_freq: 100
+  mode: test
+
+model:
+  pretrain: './weights/best_3dmatch.pth'
+  arch: tdmatch_full
+  node_id: -1
+  num_layers: 4
+  num_head: 4
+  in_points_dim: 3
+  first_subsampling_dl: 0.025
+  conv_radius: 2.5
+  in_feats_dim: 1
+  final_feats_dim: 32
+  intermediate_feats_dim: 32
+  first_feats_dim: 128
+  gnn_feats_dim: 256
+  num_kernel_points: 15
+  KP_extent: 2.0
+  batch_norm_momentum: 0.02
+  deform_radius: 5.0
+  use_batch_norm: True
+  fixed_kernel_points: center
+  KP_influence: linear
+  aggregation_mode: sum
+  deformable: False
+  modulated: False
+  ape: False
+  acn: True
+
+optim:
+  optimizer: ADAM
+  lr: 0.0001
+  weight_decay: 0.000001
+  momentum: 0.98
+  scheduler: ExpLR
+  scheduler_gamma: 0.95
+  iter_size: 4
+  sinkhorn_iters: 100
+
+data:
+  dataset: tdmatch
+  root: data/indoor
+  voxel_size: 0.025
+  augment_noise: 0.005
+  max_points: 256
+  points_lim: 10000
+  pos_margin: 0.1
+  neg_margin: 1.4
+  pos_radius: 0.0375
+  safe_radius: 0.1
+  overlap_radius: 0.0375
+  train_info: configs/tdmatch/train_info.pkl
+  val_info: configs/tdmatch/val_info.pkl
+  benchmark: 3DMatch
+  self_augmentation: False
+  pre_load: False
+
+train:
+  max_epoch: 150
+  training_max_iter: 3500
+  val_max_iter: 500
+  scheduler_interval: 1
+  snapshot_interval: 1
+  batch_size: 1
+  num_workers: 8
+  visualize: True
+  corr_sel: 128
+  neighbor_sel: 64
+  min_coarse_corr: 200
+  initial_thres: 0.2
+  thres_decay: 0.001
+loss:
+  w_matching_loss: 1
+  w_local_matching_loss: 1
+ 

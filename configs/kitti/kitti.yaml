@@ -1,0 +1,72 @@
+misc:
+  exp_dir: kitti_enc_dec
+  gpu_mode: True
+  verbose: True
+  verbose_freq: 100
+  mode: train
+
+model:
+  pretrain: ''
+  arch: kitti_full
+  node_id: -1
+  num_layers: 4
+  num_head: 4
+  in_points_dim: 3
+  first_subsampling_dl: 0.3
+  conv_radius: 4.25
+  in_feats_dim: 1
+  final_feats_dim: 32
+  intermediate_feats_dim: 32
+  first_feats_dim: 128
+  gnn_feats_dim: 256
+  num_kernel_points: 15
+  KP_extent: 2.0
+  batch_norm_momentum: 0.02
+  deform_radius: 5.0
+  use_batch_norm: True
+  fixed_kernel_points: center
+  KP_influence: linear
+  aggregation_mode: sum
+  deformable: False
+  modulated: False
+  ape: False
+  acn: True
+
+optim:
+  optimizer: ADAM
+  lr: 0.0001
+  weight_decay: 0.000001
+  momentum: 0.98
+  scheduler: ExpLR
+  scheduler_gamma: 0.95
+  iter_size: 4
+  sinkhorn_iters: 100
+
+data:
+  dataset: kitti
+  benchmark: odometryKITTI
+  root: data/kitti
+  pos_margin: 0.5
+  augment_noise: 0.01
+  augment_shift_range: 2.0
+  augment_scale_max: 1.2
+  augment_scale_min: 0.8
+  max_points: 512
+  overlap_radius: 0.45
+
+train:
+  max_epoch: 150
+  training_max_iter: 3500
+  val_max_iter: 500
+  scheduler_interval: 1
+  snapshot_interval: 1
+  batch_size: 1
+  num_workers: 8
+  visualize: True
+  corr_sel: 32
+  neighbor_sel: 32
+  mutual_correspondence: False
+
+loss:
+  w_matching_loss: 1
+  w_local_matching_loss: 1

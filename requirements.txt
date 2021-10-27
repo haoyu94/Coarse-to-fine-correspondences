@@ -1,0 +1,18 @@
+matplotlib
+numpy
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch==1.8.0+cu111 
+torchvision==0.9.0+cu111
+torchaudio==0.8.0
+nibabel
+tqdm
+open3d
+easydict
+scipy
+coloredlogs
+h5py
+GitPython
+PyYAML
+scikit_learn
+tensorboardX
+vtk_visualizer

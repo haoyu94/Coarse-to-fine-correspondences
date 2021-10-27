@@ -1,0 +1,16 @@
+Scene	¦ prec.	¦ rec.	¦ re	¦ te	¦ samples	¦
+Kitchen	¦ 0.736	¦ 0.736	¦ 3.550	¦ 0.086	¦ 524¦
+Home 1	¦ 0.631	¦ 0.631	¦ 2.962	¦ 0.088	¦ 283¦
+Home 2	¦ 0.613	¦ 0.613	¦ 3.915	¦ 0.091	¦ 222¦
+Hotel 1	¦ 0.799	¦ 0.799	¦ 3.121	¦ 0.099	¦ 210¦
+Hotel 2	¦ 0.620	¦ 0.620	¦ 3.414	¦ 0.105	¦ 138¦
+Hotel 3	¦ 0.585	¦ 0.585	¦ 3.786	¦ 0.089	¦  42¦
+Study	¦ 0.496	¦ 0.496	¦ 4.152	¦ 0.127	¦ 237¦
+MIT Lab	¦ 0.638	¦ 0.638	¦ 3.202	¦ 0.109	¦  70¦
+Mean precision: 0.640: +- 0.086
+Mean Recall: 0.640: +- 0.086
+Weighted precision: 0.661
+Mean median RRE: 3.513: +- 0.389
+Mean median RTE: 0.099: +- 0.013
+Inlier ratio: 0.268 : +- 0.036
+Feature match recall: 0.827 : +- 0.056
