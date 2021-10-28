@@ -47,18 +47,11 @@ data:
   root: data/indoor
   voxel_size: 0.025
   augment_noise: 0.005
-  max_points: 256
-  points_lim: 10000
   pos_margin: 0.1
-  neg_margin: 1.4
-  pos_radius: 0.0375
-  safe_radius: 0.1
   overlap_radius: 0.0375
   train_info: configs/tdmatch/train_info.pkl
   val_info: configs/tdmatch/val_info.pkl
   benchmark: 3DMatch
-  self_augmentation: False
-  pre_load: False
 
 train:
   max_epoch: 150
@@ -68,7 +61,6 @@ train:
   snapshot_interval: 1
   batch_size: 1
   num_workers: 8
-  visualize: True
   corr_sel: 128
   neighbor_sel: 64
   min_coarse_corr: 200

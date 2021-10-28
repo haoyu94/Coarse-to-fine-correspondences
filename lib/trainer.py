@@ -122,7 +122,6 @@ class Trainer(object):
         '''
         stats = dict()
         stats['matching_loss'] = 0.
-        stats['matching_precision'] = 0.
         stats['matching_recall'] = 0.
         stats['local_matching_loss'] = 0.
         stats['local_matching_precision'] = 0.
@@ -192,9 +191,8 @@ class Trainer(object):
         ######################################
         stats['matching_loss'] = float(stats['matching_loss'].detach())
         stats['local_matching_loss'] = float(stats['local_matching_loss'].detach())
-        stats['matching_recall'] = float(stats['matching_recall'].detach())
         stats['total_loss'] = float(stats['total_loss'].detach())
-        stats['matching_precision'] = stats['matching_precision']
+        stats['matching_recall'] = stats['matching_recall']
         stats['local_matching_precision'] = stats['local_matching_precision']
         return stats
 

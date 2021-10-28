@@ -23,49 +23,22 @@ class TDMatchDataset(data.Dataset):
         self.infos = infos
         self.base_dir = config.root
         self.data_augmentation = data_augmentation
-        self.self_augmentation = config.self_augmentation
         self.config = config
         self.voxel_size = config.voxel_size
         self.search_voxel_size = config.overlap_radius
-
+        self.points_lim = 30000
         self.rot_factor = 1.
         self.augment_noise = config.augment_noise
-
-        self.points_lim = 30000
-
-        self.pre_load = config.pre_load
-
-        if self.pre_load:
-            self.data_pool = []
-            for i in range(len(self.infos['rot'])):
-                print("Loading {}/{}".format(i + 1, len(self.infos['rot'])))
-                src_path = os.path.join(self.base_dir, self.infos['src'][i])
-                tgt_path = os.path.join(self.base_dir, self.infos['tgt'][i])
-                src_pcd = torch.load(src_path)
-                tgt_pcd = torch.load(tgt_path)
-
-                self.data_pool.append([src_pcd, tgt_pcd])
 
     def __getitem__(self, index):
         # get transformation
         rot = self.infos['rot'][index]
         trans = self.infos['trans'][index]
-        if self.pre_load:
-            src_pcd = self.data_pool[index][0]
-            if self.self_augmentation:
-                tgt_pcd = np.matmul(rot, src_pcd.T).T + trans.T
-            else:
-                tgt_pcd = self.data_pool[index][1]
-        else:
-            # get point cloud
-            src_path = os.path.join(self.base_dir, self.infos['src'][index])
-            tgt_path = os.path.join(self.base_dir, self.infos['tgt'][index])
-            src_pcd = torch.load(src_path)
-            # add self_augmentation:
-            if self.self_augmentation:
-                tgt_pcd = np.matmul(rot, src_pcd.T).T + trans.T
-            else:
-                tgt_pcd = torch.load(tgt_path)
+        # get point cloud
+        src_path = os.path.join(self.base_dir, self.infos['src'][index])
+        tgt_path = os.path.join(self.base_dir, self.infos['tgt'][index])
+        src_pcd = torch.load(src_path)
+        tgt_pcd = torch.load(tgt_path)
 
         # if we get too many points, we do some downsampling
         if (src_pcd.shape[0] > self.points_lim):

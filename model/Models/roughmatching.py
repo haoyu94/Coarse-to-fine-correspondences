@@ -49,7 +49,7 @@ class RoughMatchingModel(nn.Module):
             self.l_sattn2 = CrossAttention(feature_dim=local_gnn_feats_dim, num_heads=config.num_head)
         #################################################
         self.l_final_proj = nn.Conv1d(local_gnn_feats_dim, local_gnn_feats_dim, kernel_size=1, bias=True)
-        self.pos_margin = config.overlap_radius
+        self.pos_margin = config.pos_margin
 
     def forward(self, batch):
         len_src_c = batch['stack_lengths'][0][0]
