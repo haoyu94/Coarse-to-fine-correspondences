@@ -106,13 +106,11 @@ We study the problem of extracting correspondences between a pair of point cloud
 If you find this repository helpful, please cite:
 
 ```
-@misc{yu2021cofinet,
-      title={CoFiNet: Reliable Coarse-to-fine Correspondences for Robust Point Cloud Registration}, 
-      author={Hao Yu and Fu Li and Mahdi Saleh and Benjamin Busam and Slobodan Ilic},
-      year={2021},
-      eprint={2110.14076},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@article{yu2021cofinet,
+  title={CoFiNet: Reliable Coarse-to-fine Correspondences for Robust Point Cloud Registration},
+  author={Yu, Hao and Li, Fu and Saleh, Mahdi and Busam, Benjamin and Ilic, Slobodan},
+  journal={arXiv preprint arXiv:2110.14076},
+  year={2021}
 }
 ```
   
