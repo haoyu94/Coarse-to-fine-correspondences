@@ -4,6 +4,10 @@ import numpy as np
 import time
 import open3d
 import pandas
+from IPython import embed
+
+from vision3d.utils.point_cloud_utils import apply_transform
+from vision3d.modules.registration.functional import weighted_procrustes
 
 ###########################################
 # util methods
@@ -93,12 +97,12 @@ def point2node_correspondences(src_nodes, src_points, tgt_nodes, tgt_points, poi
     #####################################
     # calc visible ratio for each node
     src_visible, tgt_visible = point_correspondences[:, 0], point_correspondences[:, 1]
-    
+
     src_vis, tgt_vis = torch.zeros((src_points.shape[0])).to(device), torch.zeros((tgt_points.shape[0])).to(device)
-    
+
     src_vis[src_visible] = 1.
     tgt_vis[tgt_visible] = 1.
-    
+
     src_vis = src_vis.nonzero().squeeze(1)
     tgt_vis = tgt_vis.nonzero().squeeze(1)
 
@@ -108,7 +112,7 @@ def point2node_correspondences(src_nodes, src_points, tgt_nodes, tgt_points, poi
     src_idx = point2node(src_nodes, src_points)
     idx, cts = torch.unique(src_idx, return_counts=True)
     src_tot_num[idx] = cts.float()
-    
+
     src_idx_ = src_idx[src_vis]
     idx_, cts_ = torch.unique(src_idx_, return_counts=True)
     src_vis_num[idx_] = cts_.float()
@@ -117,7 +121,7 @@ def point2node_correspondences(src_nodes, src_points, tgt_nodes, tgt_points, poi
 
     tgt_vis_num = torch.zeros((tgt_nodes.shape[0])).to(device)
     tgt_tot_num = torch.ones((tgt_nodes.shape[0])).to(device)
-    
+
 
     tgt_idx = point2node(tgt_nodes, tgt_points)
     idx, cts = torch.unique(tgt_idx, return_counts=True)
@@ -180,7 +184,7 @@ def correspondences_from_score_max(score, mutual=False, supp=False, certainty=No
     return: correspondences [K, 2]
     '''
     score = torch.exp(score)
-   
+
     row_idx = torch.argmax(score[:-1, :], dim=1)
     row_seq = torch.arange(row_idx.shape[0]).cuda()
 
@@ -188,12 +192,12 @@ def correspondences_from_score_max(score, mutual=False, supp=False, certainty=No
     col_idx = torch.argmax(score[:, :-1], dim=0)
     col_seq = torch.arange(col_idx.shape[0]).cuda()
 
-    
+
     row_map = torch.zeros_like(score).cuda().bool()
     row_map[row_seq, row_idx] = True
     col_map = torch.zeros_like(score).cuda().bool()
     col_map[col_idx, col_seq] = True
-    if mutual:    
+    if mutual:
         sel_map = torch.logical_and(row_map, col_map)[:-1, :-1]
     else:
         sel_map = torch.logical_or(row_map, col_map)[:-1, :-1]
@@ -202,7 +206,7 @@ def correspondences_from_score_max(score, mutual=False, supp=False, certainty=No
         add_map = (score[:-1, :-1] >= thres)
         sel_map = torch.logical_and(sel_map, add_map)
 
-    
+
 
     correspondences = sel_map.nonzero(as_tuple=False)
 
@@ -222,7 +226,7 @@ def correspondences_from_thres(score, thres=0.0, supp=False, return_score=True):
     return: correspondences [K, 2]
     '''
     score = torch.exp(score)
-    
+
     x = torch.arange(score.shape[0] - 1).cuda().unsqueeze(-1)
     x = x.repeat([1, score.shape[1] - 1])
 
@@ -235,7 +239,7 @@ def correspondences_from_thres(score, thres=0.0, supp=False, return_score=True):
 
 
     correspondences = torch.cat([x, y], dim=-1)
-    
+
     if supp and correspondences.shape[0] == 0:
         cur_item = torch.zeros(size=(1, 2), dtype=torch.int32).cuda()
         cur_item[0, 0], cur_item[0, 1] = 0, 0
@@ -251,7 +255,7 @@ def get_fine_grained_correspondences(scores, mutual=False, supp=False, certainty
     '''
     '''
     b, n, m = scores.shape[0], scores.shape[1] - 1, scores.shape[2] - 1
-   
+
     src_idx_base = 0
     tgt_idx_base = 0
 
@@ -280,7 +284,42 @@ def get_fine_grained_correspondences(scores, mutual=False, supp=False, certainty
     else:
         return correspondences
 
-    
+
+def batched_max_selection(scores):
+    b, n, m = scores.shape
+    corr_map = torch.zeros_like(scores).bool()
+
+    batch_indices = torch.arange(b).unsqueeze(1).expand(b, n).cuda()
+    row_indices = torch.arange(n).unsqueeze(0).expand(b, n).cuda()
+    col_indices = torch.argmax(scores, dim=2)
+    corr_map[batch_indices, row_indices, col_indices] = True
+
+    batch_indices = torch.arange(b).unsqueeze(1).expand(b, m).cuda()
+    col_indices = torch.arange(m).unsqueeze(0).expand(b, m).cuda()
+    row_indices = torch.argmax(scores, dim=1)
+    corr_map[batch_indices, row_indices, col_indices] = True
+
+    corr_map = corr_map[:, :-1, :-1]
+
+    return corr_map
+
+
+def get_fine_grained_correspondences_gpu(scores, node_corr_conf):
+    scores = torch.exp(scores)
+
+    corr_map = batched_max_selection(scores)
+    batch_indices, row_indices, col_indices = torch.nonzero(corr_map, as_tuple=True)
+
+    scores = scores[:, :-1, :-1] * node_corr_conf.view(-1, 1, 1)
+    fine_corr_conf = scores[batch_indices, row_indices, col_indices]
+
+    _, n, m = scores.shape
+    row_indices = row_indices + batch_indices * n
+    col_indices = col_indices + batch_indices * m
+    correspondences = torch.stack([row_indices, col_indices], dim=1)
+    fine_corr_conf = fine_corr_conf.unsqueeze(-1)
+
+    return correspondences, fine_corr_conf
 
 
 ##################################
@@ -400,5 +439,3 @@ def NMSDownSamplerPytorchCPU(object):
             pcd_after_nms = pcd
             feat_after_nms = feat
         return pcd_after_nms, feat_after_nms
-
-
