@@ -4,10 +4,6 @@ import numpy as np
 import time
 import open3d
 import pandas
-from IPython import embed
-
-from vision3d.utils.point_cloud_utils import apply_transform
-from vision3d.modules.registration.functional import weighted_procrustes
 
 ###########################################
 # util methods
