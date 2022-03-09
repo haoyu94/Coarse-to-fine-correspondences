@@ -14,6 +14,8 @@ We study the problem of extracting correspondences between a pair of point cloud
 
 ## News
 
++ 09.03.2022: Add support for training and testing on KITTI.
+
 + 28.10.2021: Paper available on [arxiv](https://arxiv.org/abs/2110.14076).
 
 + 27.10.2021: Release training and testing code of 3DMatch and 3DLoMatch.
@@ -86,8 +88,27 @@ We study the problem of extracting correspondences between a pair of point cloud
   + To evaluate on 3DLoMatch, please change `3DMatch` in `scripts/run_ransac.sh` to `3DLoMatch`. 
  
  ## KITTI
+ 
+### Pretrained model
 
- **TBD**
+ Pretrained model is given in `weights/`. 
+
+### Prepare datasets
+
+ Please follow [PREDATOR](https://github.com/overlappredator/OverlapPredator) for data preperation.
+ 
+ There should be two folders `poses` and `sequences` under `./data/kitti/dataset/`.
+  
+### Train
+
+  ```
+  sh scripts/train_kitti.sh
+  ```
+  
+### Test
+  ```
+  sh scripts/test_kitti.sh
+  ```
  
  ## Acknowledgments
 
@@ -107,9 +128,10 @@ If you find this repository helpful, please cite:
 
 ```
 @article{yu2021cofinet,
-  title={CoFiNet: Reliable Coarse-to-fine Correspondences for Robust Point Cloud Registration},
+  title={CoFiNet: Reliable Coarse-to-fine Correspondences for Robust PointCloud Registration},
   author={Yu, Hao and Li, Fu and Saleh, Mahdi and Busam, Benjamin and Ilic, Slobodan},
-  journal={arXiv preprint arXiv:2110.14076},
+  journal={Advances in Neural Information Processing Systems},
+  volume={34},
   year={2021}
 }
 ```
