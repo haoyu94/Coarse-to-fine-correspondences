@@ -6,7 +6,7 @@ misc:
   mode: test
 
 model:
-  pretrain: './snapshot/kitti_enc_dec/checkpoints/model_best_local_matching_precision.pth'
+  pretrain: './weights/best_kitti.pth'
   arch: kitti_full
   node_id: -1
   num_layers: 4
