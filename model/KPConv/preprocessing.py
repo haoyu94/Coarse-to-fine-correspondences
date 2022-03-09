@@ -184,7 +184,7 @@ def collate_fn_descriptor(list_data, config, neighborhood_limits):
     nodes = input_points[config.node_id]
     src_node, tgt_node = nodes[:len_src_nodes], nodes[len_src_nodes:]
     if not config.mode == 'test':
-        matching_mask, node_corr = point2node_correspondences(src_node, src_pcd, tgt_node, tgt_pcd, matching_inds)
+        matching_mask, node_corr = point2node_correspondences(src_node, src_pcd, tgt_node, tgt_pcd, matching_inds, thres=config['patch_overlap_thres'])
     else:
         matching_mask, node_corr = None, None
 

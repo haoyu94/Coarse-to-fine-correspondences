@@ -31,6 +31,7 @@ model:
   modulated: False
   ape: False
   acn: True
+ 
 
 optim:
   optimizer: ADAM
@@ -62,10 +63,15 @@ train:
   snapshot_interval: 1
   batch_size: 1
   num_workers: 8
-  visualize: True
-  corr_sel: 32
-  neighbor_sel: 32
+  visualize: False
+  corr_sel: 128
+  neighbor_sel: 64
   mutual_correspondence: False
+  initial_thres: 0.2
+  thres_decay: 0.01
+  min_coarse_corr: 200
+  patch_overlap_thres: 0.2
+
 
 loss:
   w_matching_loss: 1

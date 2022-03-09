@@ -94,7 +94,9 @@ class KITTITester(Trainer):
                 ###############################################
                 # forward pass
                 for k, v in inputs.items():
-                    if type(v) == list:
+                    if v is None:
+                        pass
+                    elif type(v) == list:
                         inputs[k] = [item.to(self.device) for item in v]
                     else:
                         inputs[k] = v.to(self.device)
@@ -117,7 +119,9 @@ class KITTITester(Trainer):
                     prob = corr_conf.squeeze(1)
                     prob = prob / prob.sum()
                     idx = np.random.choice(idx, size=n_points, replace=False, p=prob.cpu().numpy())
-                    correspondences = correspondences.cpu().numpy()[idx]
+                    correspondences = correspondences[idx]
+
+                correspondences = correspondences.cpu().numpy()
 
                 src_pcd_reg = src_candidates_c.view(-1, 3).cpu().numpy()[correspondences[:, 0]]
                 tgt_pcd_reg = tgt_candidates_c.view(-1, 3).cpu().numpy()[correspondences[:, 1]]

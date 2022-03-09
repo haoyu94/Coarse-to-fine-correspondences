@@ -66,6 +66,7 @@ train:
   initial_thres: 0.2
   thres_decay: 0.01
   min_coarse_corr: 200
+  patch_overlap_thres: 0.0
 loss:
   w_matching_loss: 1
   w_local_matching_loss: 1

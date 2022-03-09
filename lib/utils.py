@@ -78,7 +78,7 @@ def point2node(nodes, points):
     return idx
 
 
-def point2node_correspondences(src_nodes, src_points, tgt_nodes, tgt_points, point_correspondences, device='cpu'):
+def point2node_correspondences(src_nodes, src_points, tgt_nodes, tgt_points, point_correspondences, thres=0., device='cpu'):
     '''
     Based on point correspondences & point2node relationships, calculate node correspondences
     :param src_nodes: Nodes of source point cloud
@@ -161,6 +161,8 @@ def point2node_correspondences(src_nodes, src_points, tgt_nodes, tgt_points, poi
     #node_corr_mask[:-1, :-1] = (node_corr_mask[:-1, :-1] > 0.01)
     #node_corr_mask[-1, :-1] = torch.clamp(1. - torch.sum(node_corr_mask[:-1, :-1], dim=0), min=0.)
     #node_corr_mask[:-1, -1] = torch.clamp(1. - torch.sum(node_corr_mask[:-1, :-1], dim=1), min=0.)
+    re_mask = (node_corr_mask[:-1, :-1] > thres)
+    node_corr_mask[:-1, :-1] = node_corr_mask[:-1, :-1] * re_mask
 
     #####################################################
     # Soft weighted mask, best Performance

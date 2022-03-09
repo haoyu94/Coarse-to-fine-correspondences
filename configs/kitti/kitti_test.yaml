@@ -6,7 +6,7 @@ misc:
   mode: test
 
 model:
-  pretrain: './snapshot/kitti_enc_dec/checkpoints/model_best_local_matching_acc.pth'
+  pretrain: './snapshot/kitti_enc_dec/checkpoints/model_best_local_matching_precision.pth'
   arch: kitti_full
   node_id: -1
   num_layers: 4
@@ -66,6 +66,10 @@ train:
   corr_sel: 32
   neighbor_sel: 32
   mutual_correspondence: False
+  initial_thres: 0.2
+  thres_decay: 0.01
+  min_coarse_corr: 200
+  patch_overlap_thres: 0.2
 
 loss:
   w_matching_loss: 1
